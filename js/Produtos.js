@@ -63,10 +63,10 @@ function criarLinhaNaTabela(produto){
     tdQuantidadeEstoque.textContent = produto.quantidadeEstoque;
     tdValor.textContent = produto.valor;
     tdDataCadastro.textContent = new Date(produto.dataCadastro).toLocaleDateString();
-    tdAcoes.innerHTML = `<button onclick="editarProduto(${produto.id})" class="btn btn-outline-primary btn-sm mr-3">
+    tdAcoes.innerHTML = `<button onclick="editarProduto(${produto.id})" class="btn">
                                 Editar
                             </button>
-                            <button onclick="excluirProduto(${produto.id})" class="btn btn-outline-primary btn-sm mr-3">
+                            <button onclick="excluirProduto(${produto.id})" class="btn">
                                 Excluir
                         </button>`
     
