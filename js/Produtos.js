@@ -41,7 +41,6 @@ obterProdutos();
 
 function popularTabela(produtos){
 
-    //limpa tabela
     tabelaProduto.textContent = '';
 
     produtos.forEach(produto => {
@@ -50,7 +49,7 @@ function popularTabela(produtos){
 }
 
 function criarLinhaNaTabela(produto){
-    //criar tr(linha) na tabela
+
     let tr = document.createElement("tr");
 
     //criando conteudo da tabela
@@ -61,7 +60,6 @@ function criarLinhaNaTabela(produto){
     let tdDataCadastro = document.createElement("td");
     let tdAcoes = document.createElement("td");
 
-    //atualizar tds com base nos produtos
     tdId.textContent = produto.id;
     tdNome.textContent = produto.nome;
     tdQuantidadeEstoque.textContent = produto.quantidadeEstoque;
@@ -74,7 +72,6 @@ function criarLinhaNaTabela(produto){
                                 Excluir
                         </button>`
     
-    //adicionando as td as tr
 
     tr.appendChild(tdId);
     tr.appendChild(tdNome);
@@ -83,23 +80,19 @@ function criarLinhaNaTabela(produto){
     tr.appendChild(tdDataCadastro);
     tr.appendChild(tdAcoes);
 
-    //adicionar tr a tabela
     tabelaProduto.appendChild(tr);
 }
 
 formModal.btnSalvar.addEventListener('click', ()=>{
 
-    //pegar dados da tela modal e virar um produto
     let produto = obterProdutoDoModal();
 
-    //campos obrigatorios
 
     if(!produto.validar()){
         alert("Nome e Quantidade Estoque são OBRIGATÓRIOS!");
         return;
     }
 
-    // adicionar na API
     adicionarProdutoNoBackend(produto);
 });
 
@@ -132,7 +125,6 @@ function adicionarProdutoNoBackend(produto){
 
         popularTabela(listaDeProdutos);
 
-        //fechar modal
         modalProduto.hide();
         alert(`Produto ${produto.nome}, foi cadastrado com sucesso!`)
     })
