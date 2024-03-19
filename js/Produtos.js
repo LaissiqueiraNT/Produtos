@@ -21,7 +21,6 @@ btnAdicionar.addEventListener('click', () =>{
     modalProduto.show();
 });
 
-//obter produtos da API
 function obterProdutos(){
     fetch(URL,{
         method: 'GET',
@@ -52,7 +51,6 @@ function criarLinhaNaTabela(produto){
 
     let tr = document.createElement("tr");
 
-    //criando conteudo da tabela
     let tdId = document.createElement('td'); 
     let tdNome = document.createElement("td");
     let tdQuantidadeEstoque = document.createElement('td');
@@ -165,3 +163,26 @@ function removerProdutoDaLista(id){
     listaDeProdutos.splice(indice,1);
 }
 
+function editarProduto(id){
+    let ediProduto = listaDeProdutos.find(ediProduto => ediProduto.id == id);
+    if(confirm("Deseja realmente editar o produto" + ediProduto.nome)){
+        editarProdutoNoBackend(id);
+    }
+}
+function editarProdutoNoBackend(id){
+    fetch(`${URL}/${id}`,  {
+        method: 'PUT',
+        headers:{
+            Authorization: obterToken()
+        }
+    })
+    .then(() => {
+        editarProdutoDaLista(id);
+        modalProduto.show();
+    })
+}
+function editarProdutoDaLista(id){
+    let editar = listaDeProdutos.findIndex(ediProduto => ediProduto.id == id);
+
+    listaDeProdutos.includes(editar,1);
+}
