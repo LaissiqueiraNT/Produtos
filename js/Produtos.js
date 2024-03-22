@@ -4,8 +4,10 @@ let listaDeProdutos = [];
 let btnAdicionar = document.querySelector('#btn-adicionar');
 let tabelaProduto = document.querySelector('table>tbody');
 let modalProduto = new bootstrap.Modal(document.getElementById('modal-produto'));
+let modoEdicao = false;
 
 let formModal = {
+    titulo: document.querySelector('h4.modal-title'),
     id: document.querySelector("#id"),
     nome: document.querySelector("#nome"),
     quantidadeEstoque: document.querySelector("#quantidadeEstoque"),
@@ -17,12 +19,14 @@ let formModal = {
 
 
 btnAdicionar.addEventListener('click', () =>{
+    modoEdicao = false;
+    formModal.titulo.textContent = 'Adicionar Produto'
     limparModalProduto();
     modalProduto.show();
 });
 
 function obterProdutos(){
-    fetch(URL,{
+    fetch (URL,{
         method: 'GET',
         headers: {
             'Authorization' : obterToken()
@@ -81,18 +85,58 @@ function criarLinhaNaTabela(produto){
     tabelaProduto.appendChild(tr);
 }
 
+
+
+
+
+
 formModal.btnSalvar.addEventListener('click', ()=>{
 
     let produto = obterProdutoDoModal();
 
 
     if(!produto.validar()){
-        alert("Nome e Quantidade Estoque são OBRIGATÓRIOS!");
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Nome e Quantidade Estoque são OBRIGATÓRIOS!",
+          });
         return;
     }
-
-    adicionarProdutoNoBackend(produto);
+    if(modoEdicao){
+        atualizarProdutoNoBackend(produto);
+    }else{
+        adicionarProdutoNoBackend(produto);
+    }
 });
+function atualizarProdutoNoBackend(produto){
+    fetch(`${URL}/${produto.id}`, {
+        method: "PUT",
+        headers: {
+            Authorization: obterToken(),
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(produto)
+    })
+    .then(() => {
+        atualizarProdutoNaTabela(produto)
+        Swal.fire({
+            icon: 'success',
+            title: `Produto ${produto.nome}, atualizado com sucesso!`,
+            showConfirmButton: false,
+            timer: 3000
+        })
+
+        modalProduto.hide();
+    })
+}
+function atualizarProdutoNaTabela(produto){
+    let indice =listaDeProdutos.findIndex(p => p.id == produto.id)
+
+    listaDeProdutos.splice(indice, 1, produto);
+
+    popularTabela(listaDeProdutos)
+}
 
 function obterProdutoDoModal(){
     return new Produto({
@@ -124,7 +168,12 @@ function adicionarProdutoNoBackend(produto){
         popularTabela(listaDeProdutos);
 
         modalProduto.hide();
-        alert(`Produto ${produto.nome}, foi cadastrado com sucesso!`)
+        Swal.fire({
+            icon: 'success',
+            title: `Produto ${produto.nome}, foi cadastrado com sucesso!`,
+            showConfirmButton: false,
+            timer: 3000
+        })
     })
 }
 
@@ -135,7 +184,22 @@ function limparModalProduto(){
     formModal.valor.value='';
     formModal.dataCadastro.value='';
 }
+function editarProduto(id){
+    modoEdicao = true;
+    formModal.titulo.textContent = "Editar Produto";
+    modalProduto.show();
+    let produto = listaDeProdutos.find(p => p.id == id);
 
+    atualizarModalProduto(produto)
+    modalProduto.show();
+}
+function atualizarModalProduto(produto){
+    formModal.id.value = produto.id;
+    formModal.nome.value= produto.nome;
+    formModal.quantidadeEstoque.value= produto.quantidadeEstoque;
+    formModal.valor.value= produto.valor;
+    formModal.dataCadastro.value= produto.dataCadastro.substring(0,10);
+}
 function excluirProduto(id){
     let produto = listaDeProdutos.find(produto => produto.id == id);
 
@@ -161,28 +225,4 @@ function removerProdutoDaLista(id){
     let indice = listaDeProdutos.findIndex(produto => produto.id == id);
 
     listaDeProdutos.splice(indice,1);
-}
-
-function editarProduto(id){
-    let ediProduto = listaDeProdutos.find(ediProduto => ediProduto.id == id);
-    if(confirm("Deseja realmente editar o produto" + ediProduto.nome)){
-        editarProdutoNoBackend(id);
-    }
-}
-function editarProdutoNoBackend(id){
-    fetch(`${URL}/${id}`,  {
-        method: 'PUT',
-        headers:{
-            Authorization: obterToken()
-        }
-    })
-    .then(() => {
-        editarProdutoDaLista(id);
-        modalProduto.show();
-    })
-}
-function editarProdutoDaLista(id){
-    let editar = listaDeProdutos.findIndex(ediProduto => ediProduto.id == id);
-
-    listaDeProdutos.includes(editar,1);
 }

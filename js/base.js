@@ -16,3 +16,21 @@ function sairDoSistema(){
     localStorage.removeItem('usuario');
     window.open('login.html', '_self');
 }
+
+function usuarioEstaLogado(){
+    let token = obterToken();
+
+    return token ? true : false;
+}
+function validaUsuarioAutenticado(){
+    let logado = usuarioEstaLogado();
+    if(window.location.pathname == '/login.html'){
+        if(logado)
+        window.open('controle-obterProdutos.html', '_self');
+    } else {
+        if(!logado){
+            window.open('login.html', '_self')
+        }
+    }
+}
+validaUsuarioAutenticado();
