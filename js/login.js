@@ -13,14 +13,14 @@ btnEntrar.addEventListener("click", () => {
 });
 
 function autenticar (email, senha){
-    const URL = 'http://localhost:3400/login';
+    const URL = 'http://localhost:3400/index';
 
     fetch (URL, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify ({email, senha})
     })
-    .then(response => response = response.json())
+    .then(response => response.json())
     .then(response => {
         console.log(response)
 

@@ -14,7 +14,7 @@ function obterUsuario(usuario){
 function sairDoSistema(){
     localStorage.removeItem('token'); 
     localStorage.removeItem('usuario');
-    window.open('login.html', '_self');
+    window.open('index.html', '_self');
 }
 
 function usuarioEstaLogado(){
@@ -24,12 +24,12 @@ function usuarioEstaLogado(){
 }
 function validaUsuarioAutenticado(){
     let logado = usuarioEstaLogado();
-    if(window.location.pathname == '/login.html'){
+    if(window.location.pathname == '/index.html'){
         if(logado)
         window.open('controle-obterProdutos.html', '_self');
     } else {
         if(!logado){
-            window.open('login.html', '_self')
+            window.open('index.html', '_self')
         }
     }
 }
